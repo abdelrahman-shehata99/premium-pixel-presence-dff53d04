@@ -79,12 +79,20 @@ export function Hero() {
         >
           <a
             href="#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToId("contact");
+            }}
             className="inline-flex items-center gap-2 h-11 px-5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20 transition-all"
           >
             Get in touch <ArrowRight className="h-4 w-4" />
           </a>
           <a
             href="#experience"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToId("experience");
+            }}
             className="inline-flex items-center h-11 px-5 rounded-lg border border-border font-medium text-sm hover:-translate-y-0.5 hover:border-primary hover:text-primary transition-all"
           >
             View experience
