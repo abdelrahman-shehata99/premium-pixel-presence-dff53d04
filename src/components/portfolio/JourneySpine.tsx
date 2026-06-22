@@ -118,12 +118,20 @@ export function JourneySpine() {
   const cometX = useMotionValue(50);
   const cometY = useMotionValue(0);
   const dashOffset = useMotionValue(1);
-  const trail = useRef(
-    Array.from({ length: TRAIL_DOTS }, () => ({
-      x: useMotionValue(50),
-      y: useMotionValue(0),
-    })),
-  ).current;
+  const t0x = useMotionValue(50); const t0y = useMotionValue(0);
+  const t1x = useMotionValue(50); const t1y = useMotionValue(0);
+  const t2x = useMotionValue(50); const t2y = useMotionValue(0);
+  const t3x = useMotionValue(50); const t3y = useMotionValue(0);
+  const t4x = useMotionValue(50); const t4y = useMotionValue(0);
+  const t5x = useMotionValue(50); const t5y = useMotionValue(0);
+  const trail = [
+    { x: t0x, y: t0y },
+    { x: t1x, y: t1y },
+    { x: t2x, y: t2y },
+    { x: t3x, y: t3y },
+    { x: t4x, y: t4y },
+    { x: t5x, y: t5y },
+  ];
 
   const PATH_D = buildPath(cfg.amp);
 
