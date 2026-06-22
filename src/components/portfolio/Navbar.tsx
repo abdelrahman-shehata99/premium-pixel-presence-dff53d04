@@ -64,6 +64,10 @@ export function Navbar() {
       <div className="mx-auto max-w-[1140px] h-full px-5 sm:px-8 flex items-center justify-between">
         <a
           href="#top"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToId("top");
+          }}
           className="font-display font-bold text-lg tracking-tight"
           aria-label="Home"
         >
@@ -75,6 +79,10 @@ export function Navbar() {
             <a
               key={link.id}
               href={`#${link.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToId(link.id);
+              }}
               className={`px-3 py-2 text-sm rounded-md transition-colors ${
                 active === link.id
                   ? "text-foreground"
@@ -132,7 +140,11 @@ export function Navbar() {
                 <a
                   key={link.id}
                   href={`#${link.id}`}
-                  onClick={() => setOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpen(false);
+                    scrollToId(link.id);
+                  }}
                   className={`px-3 py-3 rounded-md text-base ${
                     active === link.id
                       ? "text-primary bg-secondary"

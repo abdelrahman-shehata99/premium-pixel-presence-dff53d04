@@ -1,4 +1,5 @@
 import { ArrowUp, Github, Linkedin, Mail } from "lucide-react";
+import { scrollToId } from "@/lib/smooth-scroll";
 
 export function Footer() {
   return (
