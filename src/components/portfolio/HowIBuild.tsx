@@ -89,6 +89,15 @@ export function HowIBuild() {
     offset: ["start start", "end end"],
   });
 
+  // Preload all chapter screenshots so transitions don't pop.
+  useEffect(() => {
+    CHAPTERS.forEach((c) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = c.image;
+    });
+  }, []);
+
   // Tiny "breathing" motion for the foreground device.
   const phoneY = useTransform(scrollYProgress, [0, 1], [10, -10]);
   const phoneScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.98, 1.02, 0.99]);
