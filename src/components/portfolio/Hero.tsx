@@ -1,5 +1,7 @@
 import { ArrowRight, Github, Linkedin, Mail, MapPin } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import { AuraCursor } from "./AuraCursor";
+import { scrollToId } from "@/lib/smooth-scroll";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -19,15 +21,8 @@ export function Hero() {
       id="top"
       className="relative pt-32 sm:pt-40 pb-24 sm:pb-32 overflow-hidden"
     >
-      {/* Ambient blob */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[520px] w-[820px] rounded-full opacity-30 blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle at center, hsl(174 72% 50% / 0.45), transparent 60%)",
-        }}
-      />
+      {/* Cursor-following aura — lives behind the headline, above the bg */}
+      <AuraCursor />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.04] dark:opacity-[0.06]"
