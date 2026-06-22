@@ -1,6 +1,7 @@
 import { SectionHeader } from "./SectionHeader";
 import { Reveal } from "./Reveal";
 import { ArrowUpRight, Sparkles } from "lucide-react";
+import screenJourney from "@/assets/screen-journey.png.asset.json";
 
 const TAGS = ["Flutter", "iOS", "Android", "AI Personalization", "Clean Architecture"];
 
