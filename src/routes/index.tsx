@@ -3,12 +3,15 @@ import { Navbar } from "@/components/portfolio/Navbar";
 import { Hero } from "@/components/portfolio/Hero";
 import { Highlights } from "@/components/portfolio/Highlights";
 import { About } from "@/components/portfolio/About";
+import { HowIBuild } from "@/components/portfolio/HowIBuild";
 import { Experience } from "@/components/portfolio/Experience";
 import { Skills } from "@/components/portfolio/Skills";
 import { Work } from "@/components/portfolio/Work";
 import { EducationLanguages } from "@/components/portfolio/EducationLanguages";
 import { Contact } from "@/components/portfolio/Contact";
 import { Footer } from "@/components/portfolio/Footer";
+import { SmoothScroll } from "@/components/portfolio/SmoothScroll";
+import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -42,11 +45,14 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SmoothScroll />
+      <ScrollProgress />
       <Navbar />
       <main>
         <Hero />
         <Highlights />
         <About />
+        <HowIBuild />
         <Experience />
         <Skills />
         <Work />
