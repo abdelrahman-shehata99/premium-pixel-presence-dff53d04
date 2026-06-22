@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { applyTheme, getInitialTheme } from "@/lib/theme";
+import { scrollToId } from "@/lib/smooth-scroll";
 
 const NAV_LINKS = [
   { id: "about", label: "About" },
