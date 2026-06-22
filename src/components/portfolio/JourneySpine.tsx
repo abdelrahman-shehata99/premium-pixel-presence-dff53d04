@@ -213,9 +213,9 @@ export function JourneySpine() {
   useEffect(() => {
     const pad =
       size === "mobile" ? "18px" : size === "tablet" ? "28px" : "0px";
-    document.documentElement.style.setProperty("--spine-gutter", pad);
+    document.body.style.paddingLeft = pad;
     return () => {
-      document.documentElement.style.removeProperty("--spine-gutter");
+      document.body.style.paddingLeft = "";
     };
   }, [size]);
 
