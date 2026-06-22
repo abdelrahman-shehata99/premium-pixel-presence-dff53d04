@@ -7,8 +7,9 @@ import {
 } from "framer-motion";
 
 /**
- * Cursor-following aura blobs that live behind the hero text.
- * Hover/pointer devices: blobs follow the cursor with eased spring lag.
+ * Cursor-following aura blobs. Bolder color presence, smooth spring lag.
+ * In dark mode the blobs use mix-blend-mode: screen so they glow vividly.
+ * In light mode they fall back to normal blending with lower opacity.
  * Touch / no-pointer: blobs drift in a slow continuous loop.
  * Reduced motion: rendered static and centered.
  */
@@ -19,7 +20,6 @@ export function AuraCursor() {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Two springs so blob B lags further behind blob A.
   const xA = useSpring(x, { stiffness: 50, damping: 20, mass: 0.6 });
   const yA = useSpring(y, { stiffness: 50, damping: 20, mass: 0.6 });
   const xB = useSpring(x, { stiffness: 28, damping: 22, mass: 0.8 });
@@ -50,7 +50,6 @@ export function AuraCursor() {
           });
         }
       };
-      // Start centered.
       x.set(0);
       y.set(0);
       window.addEventListener("pointermove", onMove, { passive: true });
@@ -60,9 +59,8 @@ export function AuraCursor() {
       };
     }
 
-    // Touch / coarse pointer: gentle continuous drift.
     let raf = 0;
-    let t0 = performance.now();
+    const t0 = performance.now();
     const loop = (t: number) => {
       const dt = (t - t0) / 1000;
       const rect = el.getBoundingClientRect();
@@ -80,34 +78,32 @@ export function AuraCursor() {
     <div
       ref={ref}
       aria-hidden
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className="pointer-events-none absolute inset-0 overflow-hidden [mix-blend-mode:normal] dark:[mix-blend-mode:screen]"
     >
-      {/* Blob A — teal accent */}
+      {/* Blob A — vivid teal with bright core */}
       <motion.div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 dark:opacity-[0.55]"
         style={{
           x: reduced ? 0 : xA,
           y: reduced ? 0 : yA,
-          width: 700,
-          height: 700,
-          filter: "blur(110px)",
-          opacity: 0.35,
+          width: 620,
+          height: 620,
+          filter: "blur(90px)",
           background:
-            "radial-gradient(circle at center, hsl(174 72% 52% / 0.85), transparent 60%)",
+            "radial-gradient(circle at center, hsl(180 95% 88% / 0.95) 0%, hsl(174 85% 55% / 0.9) 28%, hsl(174 85% 50% / 0.5) 55%, transparent 72%)",
         }}
       />
-      {/* Blob B — cool indigo, trails further */}
+      {/* Blob B — stronger indigo, trails further */}
       <motion.div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 dark:opacity-[0.45]"
         style={{
           x: reduced ? 0 : xB,
           y: reduced ? 0 : yB,
-          width: 480,
-          height: 480,
-          filter: "blur(120px)",
-          opacity: 0.28,
+          width: 460,
+          height: 460,
+          filter: "blur(100px)",
           background:
-            "radial-gradient(circle at center, hsl(245 70% 60% / 0.85), transparent 60%)",
+            "radial-gradient(circle at center, hsl(250 80% 62% / 0.95), hsl(250 80% 55% / 0.55) 50%, transparent 72%)",
         }}
       />
     </div>
