@@ -83,9 +83,9 @@ export function Hero() {
               e.preventDefault();
               scrollToId("contact");
             }}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20 transition-all"
+            className="cta-sheen cta-breath inline-flex items-center gap-2 h-11 px-5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/30 transition-all"
           >
-            Get in touch <ArrowRight className="h-4 w-4" />
+            Get in touch <ArrowRight className="cta-arrow h-4 w-4" />
           </a>
           <a
             href="#experience"
@@ -103,7 +103,7 @@ export function Hero() {
           <a
             href="https://github.com/abdelrahman-shehata99"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             aria-label="GitHub"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -112,14 +112,16 @@ export function Hero() {
           <a
             href="https://www.linkedin.com/in/abdelrahman-shehata-9a20b41b1"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             aria-label="LinkedIn"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <Linkedin className="h-5 w-5" />
           </a>
           <a
-            href="mailto:abdelrahman2490@gmail.com"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=abdelrahman2490@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Email"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
