@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
+  AnimatePresence,
   motion,
   useMotionValue,
   useMotionValueEvent,
@@ -17,26 +18,55 @@ const SECTIONS = [
   { id: "contact", label: "Contact" },
 ];
 
-// Organic curved spine — gentle S-curves around x=50 in a 100-wide viewBox.
-// Height is a runtime value; we use a normalized path scaled via preserveAspectRatio="none".
-const RAIL_H = 1000; // arbitrary internal coordinate height
-const PATH_D = `
-  M 50 0
-  C 30 ${RAIL_H * 0.08}, 28 ${RAIL_H * 0.16}, 50 ${RAIL_H * 0.22}
-  C 74 ${RAIL_H * 0.28}, 76 ${RAIL_H * 0.36}, 50 ${RAIL_H * 0.42}
-  C 28 ${RAIL_H * 0.48}, 26 ${RAIL_H * 0.56}, 50 ${RAIL_H * 0.62}
-  C 72 ${RAIL_H * 0.68}, 74 ${RAIL_H * 0.78}, 50 ${RAIL_H * 0.84}
-  C 32 ${RAIL_H * 0.9}, 38 ${RAIL_H * 0.96}, 50 ${RAIL_H}
-`;
+const RAIL_H = 1000;
+
+type Size = "mobile" | "tablet" | "desktop";
+
+function useSize(): Size {
+  const [size, setSize] = useState<Size>(() => {
+    if (typeof window === "undefined") return "desktop";
+    const w = window.innerWidth;
+    if (w < 640) return "mobile";
+    if (w < 1024) return "tablet";
+    return "desktop";
+  });
+  useEffect(() => {
+    const onR = () => {
+      const w = window.innerWidth;
+      setSize(w < 640 ? "mobile" : w < 1024 ? "tablet" : "desktop");
+    };
+    window.addEventListener("resize", onR);
+    return () => window.removeEventListener("resize", onR);
+  }, []);
+  return size;
+}
+
+function buildPath(amp: number) {
+  // amp is curve amplitude in viewBox units (centerline at x=50)
+  const l = 50 - amp;
+  const r = 50 + amp;
+  return `
+    M 50 0
+    C ${l} ${RAIL_H * 0.08}, ${l - 2} ${RAIL_H * 0.16}, 50 ${RAIL_H * 0.22}
+    C ${r} ${RAIL_H * 0.28}, ${r + 2} ${RAIL_H * 0.36}, 50 ${RAIL_H * 0.42}
+    C ${l} ${RAIL_H * 0.48}, ${l - 2} ${RAIL_H * 0.56}, 50 ${RAIL_H * 0.62}
+    C ${r - 2} ${RAIL_H * 0.68}, ${r} ${RAIL_H * 0.78}, 50 ${RAIL_H * 0.84}
+    C ${l + 4} ${RAIL_H * 0.9}, ${l + 10} ${RAIL_H * 0.96}, 50 ${RAIL_H}
+  `;
+}
+
+const TRAIL_DOTS = 6;
 
 export function JourneySpine() {
   const reduced = useReducedMotion();
+  const size = useSize();
   const pathRef = useRef<SVGPathElement | null>(null);
   const [totalLength, setTotalLength] = useState(0);
   const [active, setActive] = useState<string>("about");
   const [nodePositions, setNodePositions] = useState<
     { id: string; x: number; y: number; label: string }[]
   >([]);
+  const [rippleKey, setRippleKey] = useState<string | null>(null);
 
   const { scrollYProgress } = useScroll();
   const smooth = useSpring(scrollYProgress, {
@@ -45,17 +75,63 @@ export function JourneySpine() {
     restDelta: 0.001,
   });
 
+  // Size-dependent visual config
+  const cfg = {
+    mobile: {
+      leftPx: 10,
+      widthPx: 24,
+      heightVh: "min(80vh, 700px)",
+      amp: 8,
+      stroke: 1.4,
+      node: 2.4,
+      activeNode: 4,
+      comet: 3.2,
+      showLabels: false,
+      showActiveRing: true,
+    },
+    tablet: {
+      leftPx: 14,
+      widthPx: 38,
+      heightVh: "min(76vh, 680px)",
+      amp: 14,
+      stroke: 1.8,
+      node: 3,
+      activeNode: 4.6,
+      comet: 3.8,
+      showLabels: "active" as const,
+      showActiveRing: true,
+    },
+    desktop: {
+      leftPx: 28,
+      widthPx: 60,
+      heightVh: "min(72vh, 640px)",
+      amp: 24,
+      stroke: 2,
+      node: 3.2,
+      activeNode: 5,
+      comet: 4.2,
+      showLabels: "hover" as const,
+      showActiveRing: true,
+    },
+  }[size];
+
   const cometX = useMotionValue(50);
   const cometY = useMotionValue(0);
   const dashOffset = useMotionValue(1);
+  const trail = useRef(
+    Array.from({ length: TRAIL_DOTS }, () => ({
+      x: useMotionValue(50),
+      y: useMotionValue(0),
+    })),
+  ).current;
 
-  // Recompute path length and node positions.
+  const PATH_D = buildPath(cfg.amp);
+
   const recompute = () => {
     const path = pathRef.current;
     if (!path) return;
     const len = path.getTotalLength();
     setTotalLength(len);
-
     const pageH =
       document.documentElement.scrollHeight - window.innerHeight || 1;
     const positions = SECTIONS.map(({ id, label }) => {
@@ -86,10 +162,10 @@ export function JourneySpine() {
       window.removeEventListener("load", recompute);
       clearTimeout(t);
     };
+    // recompute whenever size changes the path
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [size]);
 
-  // Track active section via IntersectionObserver.
   useEffect(() => {
     const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(
       (e): e is HTMLElement => !!e,
@@ -97,7 +173,10 @@ export function JourneySpine() {
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
+          if (e.isIntersecting) {
+            setActive(e.target.id);
+            setRippleKey(`${e.target.id}-${Date.now()}`);
+          }
         });
       },
       { rootMargin: "-40% 0px -55% 0px" },
@@ -106,25 +185,44 @@ export function JourneySpine() {
     return () => io.disconnect();
   }, []);
 
-  // Drive dashoffset + comet from smoothed progress.
   useMotionValueEvent(smooth, "change", (v) => {
     dashOffset.set(1 - v);
     const path = pathRef.current;
     if (!path || !totalLength) return;
-    const pt = path.getPointAtLength(v * totalLength);
+    const tip = v * totalLength;
+    const pt = path.getPointAtLength(tip);
     cometX.set(pt.x);
     cometY.set(pt.y);
+    for (let i = 0; i < TRAIL_DOTS; i++) {
+      const d = tip - (i + 1) * 14;
+      const p = path.getPointAtLength(Math.max(0, d));
+      trail[i].x.set(p.x);
+      trail[i].y.set(p.y);
+    }
   });
+
+  // Apply small left padding to body content so the spine sits in a gutter
+  useEffect(() => {
+    const pad =
+      size === "mobile" ? "18px" : size === "tablet" ? "28px" : "0px";
+    document.documentElement.style.setProperty("--spine-gutter", pad);
+    return () => {
+      document.documentElement.style.removeProperty("--spine-gutter");
+    };
+  }, [size]);
+
+  const gradId = "spineGrad";
 
   return (
     <div
       aria-hidden={false}
-      className="hidden lg:block fixed left-7 z-40 pointer-events-none"
+      className="fixed z-40 pointer-events-none"
       style={{
+        left: `${cfg.leftPx}px`,
         top: "50%",
         transform: "translateY(-50%)",
-        height: "min(72vh, 640px)",
-        width: "60px",
+        height: cfg.heightVh,
+        width: `${cfg.widthPx}px`,
       }}
     >
       <svg
@@ -132,57 +230,76 @@ export function JourneySpine() {
         preserveAspectRatio="none"
         className="absolute inset-0 w-full h-full overflow-visible"
       >
+        <defs>
+          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2={RAIL_H} gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="hsl(174 80% 55%)" />
+            <stop offset="100%" stopColor="hsl(250 80% 62%)" />
+          </linearGradient>
+          <filter id="spineGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="1.6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
         {/* Track */}
         <path
           d={PATH_D}
           fill="none"
-          stroke="hsl(var(--border-raw, 215 20% 30%) / 0.5)"
-          strokeWidth={2}
+          stroke="hsl(var(--foreground) / 0.16)"
+          strokeWidth={cfg.stroke}
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
-          className="[stroke:hsl(var(--foreground)/0.18)]"
         />
-        {/* Progress */}
+        {/* Progress with gradient + glow */}
         <motion.path
           ref={pathRef}
           d={PATH_D}
           fill="none"
-          strokeWidth={2}
+          stroke={`url(#${gradId})`}
+          strokeWidth={cfg.stroke}
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
           pathLength={1}
           strokeDasharray={1}
           style={reduced ? undefined : { strokeDashoffset: dashOffset }}
-          className="[stroke:hsl(var(--primary-raw,174_72%_52%))]"
-          stroke="currentColor"
-          color="hsl(174 85% 55%)"
+          filter={reduced ? undefined : "url(#spineGlow)"}
         />
 
-        {/* Start dot */}
-        <circle cx={50} cy={0} r={4} fill="hsl(174 85% 60%)" />
-        {/* End dot */}
-        <circle cx={50} cy={RAIL_H} r={4} fill="hsl(174 85% 60%)" />
-
-        {/* Section nodes on the curve */}
+        {/* Section nodes */}
         {nodePositions.map((n) => {
           const isActive = active === n.id;
           return (
             <g key={n.id} transform={`translate(${n.x} ${n.y})`}>
-              {isActive && (
+              {isActive && cfg.showActiveRing && (
                 <circle
-                  r={10}
+                  r={cfg.activeNode * 2.2}
                   fill="none"
                   stroke="hsl(174 85% 60%)"
+                  strokeWidth={1}
+                  opacity={0.45}
+                />
+              )}
+              {/* Ripple one-shot */}
+              {isActive && !reduced && rippleKey && (
+                <motion.circle
+                  key={rippleKey}
+                  initial={{ r: cfg.activeNode, opacity: 0.7 }}
+                  animate={{ r: cfg.activeNode * 4.5, opacity: 0 }}
+                  transition={{ duration: 1.1, ease: "easeOut" }}
+                  fill="none"
+                  stroke="hsl(200 90% 70%)"
                   strokeWidth={1.2}
-                  opacity={0.5}
                 />
               )}
               <circle
-                r={isActive ? 5 : 3.2}
-                fill={isActive ? "hsl(174 85% 60%)" : "hsl(174 85% 55% / 0.55)"}
+                r={isActive ? cfg.activeNode : cfg.node}
+                fill={isActive ? `url(#${gradId})` : "hsl(174 80% 55% / 0.55)"}
                 style={{
                   filter: isActive
-                    ? "drop-shadow(0 0 6px hsl(174 85% 55% / 0.7))"
+                    ? "drop-shadow(0 0 5px hsl(174 85% 55% / 0.8))"
                     : undefined,
                   transition: "r 200ms ease-out",
                 }}
@@ -191,46 +308,79 @@ export function JourneySpine() {
           );
         })}
 
+        {/* Trail */}
+        {!reduced &&
+          trail.map((t, i) => (
+            <motion.circle
+              key={i}
+              r={cfg.comet * (1 - i / (TRAIL_DOTS + 1)) * 0.7}
+              cx={t.x}
+              cy={t.y}
+              fill="hsl(190 95% 80%)"
+              opacity={(1 - i / TRAIL_DOTS) * 0.5}
+              style={{
+                filter: "drop-shadow(0 0 4px hsl(180 90% 60% / 0.7))",
+              }}
+            />
+          ))}
+
         {/* Comet */}
         {!reduced && (
           <motion.circle
-            r={4.2}
+            r={cfg.comet}
             cx={cometX}
             cy={cometY}
-            fill="hsl(180 95% 90%)"
+            fill="hsl(180 95% 92%)"
             style={{
               filter:
-                "drop-shadow(0 0 8px hsl(174 90% 60% / 0.95)) drop-shadow(0 0 14px hsl(174 85% 55% / 0.6))",
+                "drop-shadow(0 0 8px hsl(174 90% 60% / 0.95)) drop-shadow(0 0 14px hsl(250 80% 65% / 0.6))",
             }}
           />
         )}
       </svg>
 
-      {/* Clickable buttons positioned absolutely matching node points */}
+      {/* Click targets + labels */}
       <div className="absolute inset-0">
         {nodePositions.map((n) => {
           const isActive = active === n.id;
-          // Convert from internal coords to %.
           const leftPct = (n.x / 100) * 100;
           const topPct = (n.y / RAIL_H) * 100;
+          const showLabel =
+            cfg.showLabels === "hover"
+              ? true
+              : cfg.showLabels === "active" && isActive
+                ? true
+                : false;
           return (
             <button
               key={n.id}
               type="button"
               onClick={() => scrollToId(n.id)}
               aria-label={`Go to ${n.label}`}
-              className="group absolute pointer-events-auto -translate-x-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(174_85%_60%)] rounded-full"
+              className="group absolute pointer-events-auto -translate-x-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(174_85%_60%)] rounded-full"
               style={{ left: `${leftPct}%`, top: `${topPct}%` }}
             >
-              <span
-                className={`absolute left-full ml-3 whitespace-nowrap font-mono-ui text-[10px] uppercase tracking-[0.18em] transition-opacity duration-200 ${
-                  isActive
-                    ? "opacity-100 text-[hsl(174_85%_60%)]"
-                    : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 text-foreground/70"
-                }`}
-              >
-                {n.label}
-              </span>
+              {showLabel && (
+                <AnimatePresence>
+                  {(isActive || cfg.showLabels === "hover") && (
+                    <motion.span
+                      key={isActive ? "active" : "idle"}
+                      initial={{ opacity: 0, x: -6 }}
+                      animate={{ opacity: isActive ? 1 : 0, x: 0 }}
+                      exit={{ opacity: 0, x: -6 }}
+                      transition={{ duration: 0.25 }}
+                      className={`absolute left-full ml-3 whitespace-nowrap font-mono-ui text-[10px] uppercase tracking-[0.18em] flex items-center gap-2 ${
+                        isActive
+                          ? "text-[hsl(174_85%_60%)]"
+                          : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 text-foreground/70"
+                      }`}
+                    >
+                      <span className="h-px w-3 bg-[hsl(174_85%_60%)]" />
+                      {n.label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              )}
             </button>
           );
         })}
