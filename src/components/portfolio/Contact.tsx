@@ -7,7 +7,7 @@ const LINKS = [
     icon: Mail,
     label: "Email",
     value: "abdelrahman2490@gmail.com",
-    href: "mailto:abdelrahman2490@gmail.com",
+    href: "https://mail.google.com/mail/?view=cm&fs=1&to=abdelrahman2490@gmail.com",
   },
   {
     icon: Phone,
