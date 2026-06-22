@@ -42,18 +42,18 @@ export function Work() {
                   ))}
                 </ul>
                 <div className="mt-8 flex">
-                  <button
-                    disabled
-                    className="inline-flex items-center gap-2 h-10 px-4 rounded-lg border border-border text-sm text-muted-foreground cursor-not-allowed"
-                    aria-disabled="true"
-                    title="Link coming soon"
+                  <a
+                    href="https://apps.apple.com/us/app/learn-english-easily-istoria/id1527544903"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 h-10 px-4 rounded-lg border border-border text-sm hover:border-primary hover:text-primary hover:-translate-y-0.5 transition-all"
                   >
                     Visit <ArrowUpRight className="h-4 w-4" />
-                  </button>
+                  </a>
                 </div>
               </div>
 
-              {/* Stylized phone mockup */}
+              {/* Phone mockup with real iStoria screenshot */}
               <div className="relative min-h-[360px] lg:min-h-full bg-gradient-to-br from-primary/10 via-transparent to-primary/5 flex items-center justify-center p-8 sm:p-12 overflow-hidden">
                 <div
                   aria-hidden
@@ -64,19 +64,15 @@ export function Work() {
                   }}
                 />
                 <div className="relative w-[200px] sm:w-[230px] aspect-[9/19] rounded-[2.2rem] border border-border bg-background shadow-2xl shadow-primary/10 p-2">
-                  <div className="h-full w-full rounded-[1.8rem] overflow-hidden relative bg-gradient-to-br from-primary/20 to-card">
-                    <div className="absolute top-2 left-1/2 -translate-x-1/2 h-4 w-20 rounded-full bg-foreground/80" />
-                    <div className="absolute inset-0 p-5 pt-10 flex flex-col gap-3">
-                      <div className="h-3 w-20 rounded-full bg-foreground/20" />
-                      <div className="h-5 w-32 rounded-full bg-foreground/40" />
-                      <div className="mt-4 h-24 rounded-xl bg-primary/30 border border-primary/40" />
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        <div className="h-16 rounded-lg bg-foreground/10" />
-                        <div className="h-16 rounded-lg bg-foreground/10" />
-                      </div>
-                      <div className="h-3 w-24 rounded-full bg-foreground/20 mt-2" />
-                      <div className="h-3 w-16 rounded-full bg-foreground/10" />
-                    </div>
+                  <div className="h-full w-full rounded-[1.8rem] overflow-hidden relative bg-black">
+                    <img
+                      src={screenJourney.url}
+                      alt="iStoria app screenshot"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 h-4 w-20 rounded-full bg-black/80 z-10" />
                   </div>
                 </div>
               </div>
