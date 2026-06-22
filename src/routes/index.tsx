@@ -12,6 +12,7 @@ import { Contact } from "@/components/portfolio/Contact";
 import { Footer } from "@/components/portfolio/Footer";
 import { SmoothScroll } from "@/components/portfolio/SmoothScroll";
 import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
+import { JourneySpine } from "@/components/portfolio/JourneySpine";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -47,6 +48,7 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       <SmoothScroll />
       <ScrollProgress />
+      <JourneySpine />
       <Navbar />
       <main>
         <Hero />

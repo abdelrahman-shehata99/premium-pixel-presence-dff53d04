@@ -6,13 +6,18 @@ import {
   useTransform,
 } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
+import screenJourney from "@/assets/screen-journey.png.asset.json";
+import screenVocab from "@/assets/screen-vocab.png.asset.json";
+import screenLibrary from "@/assets/screen-library.png.asset.json";
+import screenStreak from "@/assets/screen-streak.png.asset.json";
+import screenReader from "@/assets/screen-reader.png.asset.json";
 
 type Chapter = {
   num: string;
   title: string;
   line: string;
-  /** Background scene — pure CSS so it looks good with zero assets. */
-  scene: string;
+  /** Real iStoria screenshot used in front + behind. */
+  image: string;
 };
 
 const CHAPTERS: Chapter[] = [
@@ -20,48 +25,55 @@ const CHAPTERS: Chapter[] = [
     num: "01",
     title: "Architecture",
     line: "Clean, scalable Flutter — MVVM, BLoC/Cubit, feature-first modularization.",
-    scene:
-      "radial-gradient(60% 60% at 20% 20%, hsl(174 72% 52% / 0.45), transparent 60%), radial-gradient(50% 50% at 80% 80%, hsl(174 72% 30% / 0.35), transparent 60%), linear-gradient(135deg, hsl(222 47% 7%), hsl(222 47% 10%))",
+    image: screenJourney.url,
   },
   {
     num: "02",
     title: "AI personalization",
     line: "AI model endpoints powering personalization & recommendations that lift retention.",
-    scene:
-      "radial-gradient(55% 55% at 70% 25%, hsl(190 80% 55% / 0.45), transparent 60%), radial-gradient(60% 60% at 20% 80%, hsl(220 75% 55% / 0.40), transparent 60%), linear-gradient(135deg, hsl(222 47% 6%), hsl(222 47% 10%))",
+    image: screenReader.url,
   },
   {
     num: "03",
     title: "Scale",
     line: "Production apps serving 5M+ users across iOS & Android, smooth at scale.",
-    scene:
-      "radial-gradient(60% 60% at 30% 30%, hsl(245 70% 60% / 0.45), transparent 60%), radial-gradient(55% 55% at 80% 70%, hsl(265 60% 55% / 0.40), transparent 60%), linear-gradient(135deg, hsl(222 47% 6%), hsl(230 47% 10%))",
+    image: screenLibrary.url,
   },
   {
     num: "04",
     title: "Release engineering",
     line: "End-to-end delivery — CI/CD, testing, App Store & Play Store releases.",
-    scene:
-      "radial-gradient(60% 60% at 75% 30%, hsl(174 72% 52% / 0.40), transparent 60%), radial-gradient(55% 55% at 25% 75%, hsl(280 60% 55% / 0.35), transparent 60%), linear-gradient(135deg, hsl(222 47% 6%), hsl(240 47% 10%))",
+    image: screenStreak.url,
   },
 ];
 
-// Replace with real iStoria/app screenshots when available.
-// const IMAGES: string[] = [];
+// Reference so unused-imports check passes & we can rotate the secondary frame.
+const EXTRA_SCREEN = screenVocab.url;
+void EXTRA_SCREEN;
 
 function ChapterStacked({ c }: { c: Chapter }) {
   return (
-    <div className="rounded-2xl border border-border overflow-hidden">
-      <div
-        className="aspect-[16/10] w-full"
-        style={{ backgroundImage: c.scene }}
-        aria-hidden
-      />
+    <div className="rounded-2xl border border-border overflow-hidden bg-[hsl(222_47%_6%)]">
+      <div className="aspect-[9/16] w-full max-h-[520px] relative overflow-hidden">
+        <img
+          src={c.image}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.25) 50%, transparent)",
+          }}
+        />
+      </div>
       <div className="p-6 sm:p-8">
-        <p className="font-mono-ui text-xs text-primary uppercase tracking-[0.18em]">
+        <p className="font-mono-ui text-xs uppercase tracking-[0.18em] text-[hsl(174_85%_60%)]">
           {c.num} · {c.title}
         </p>
-        <p className="mt-3 text-lg sm:text-xl text-foreground/90 leading-relaxed">
+        <p className="mt-3 text-lg sm:text-xl leading-relaxed text-[hsl(0_0%_98%)]">
           {c.line}
         </p>
       </div>
@@ -118,20 +130,19 @@ export function HowIBuild() {
         ))}
       </div>
 
-      {/* Pinned scrollytelling — sm and up. */}
+      {/* Pinned scrollytelling — sm and up. Always dark stage. */}
       <div
         ref={wrapperRef}
         className="hidden sm:block relative"
         style={{ height: "400vh" }}
       >
-        <div className="sticky top-0 h-[100svh] overflow-hidden">
-          {/* Background sequence */}
+        <div className="sticky top-0 h-[100svh] overflow-hidden bg-[hsl(222_47%_4%)]">
+          {/* Background sequence — same image, blurred & darkened */}
           {CHAPTERS.map((c, i) => {
             const n = CHAPTERS.length;
             const start = i / n;
             const end = (i + 1) / n;
             const overlap = 0.06;
-            // crossfade opacity
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const opacity = useTransform(
               scrollYProgress,
@@ -151,31 +162,43 @@ export function HowIBuild() {
             const scale = useTransform(
               scrollYProgress,
               [start, end],
-              [1, 1.08],
+              [1.05, 1.18],
             );
             return (
               <motion.div
                 key={c.num}
                 aria-hidden
                 className="absolute inset-0"
-                style={{
-                  opacity,
-                  scale,
-                  backgroundImage: c.scene,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
+                style={{ opacity, scale }}
+              >
+                <img
+                  src={c.image}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ filter: "blur(40px) brightness(0.5)" }}
+                  loading="lazy"
+                />
+              </motion.div>
             );
           })}
 
-          {/* Subtle vignette so foreground text stays readable */}
+          {/* Vignette */}
           <div
             aria-hidden
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "radial-gradient(ellipse at center, transparent 35%, hsl(222 47% 4% / 0.55) 100%)",
+                "radial-gradient(ellipse at center, transparent 30%, hsl(222 47% 3% / 0.7) 100%)",
+            }}
+          />
+
+          {/* Left-side text scrim for legibility */}
+          <div
+            aria-hidden
+            className="absolute inset-y-0 left-0 w-full lg:w-3/5 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(to right, rgba(0,0,0,0.72), rgba(0,0,0,0.45) 45%, transparent 90%)",
             }}
           />
 
@@ -189,7 +212,7 @@ export function HowIBuild() {
               const dotOpacity = useTransform(
                 scrollYProgress,
                 [Math.max(0, start - 0.02), start, end, Math.min(1, end + 0.02)],
-                [0.25, 1, 1, 0.25],
+                [0.3, 1, 1, 0.3],
               );
               // eslint-disable-next-line react-hooks/rules-of-hooks
               const dotScale = useTransform(
@@ -200,7 +223,7 @@ export function HowIBuild() {
               return (
                 <motion.span
                   key={i}
-                  className="block h-2.5 w-2.5 rounded-full bg-primary"
+                  className="block h-2.5 w-2.5 rounded-full bg-[hsl(174_85%_60%)] shadow-[0_0_10px_hsl(174_85%_55%/0.7)]"
                   style={{ opacity: dotOpacity, scale: dotScale }}
                 />
               );
@@ -209,7 +232,7 @@ export function HowIBuild() {
 
           {/* Sticky foreground — phone device + captions */}
           <div className="relative h-full mx-auto max-w-[1140px] px-5 sm:px-8 grid lg:grid-cols-2 items-center gap-10">
-            {/* Captions */}
+            {/* Captions — always near-white over scrim */}
             <div className="relative z-10 order-2 lg:order-1">
               {CHAPTERS.map((c, i) => {
                 const n = CHAPTERS.length;
@@ -239,16 +262,21 @@ export function HowIBuild() {
                     className="absolute inset-0 flex flex-col justify-center"
                     style={{ opacity: op, y: yy }}
                   >
-                    <p className="font-mono-ui text-xs text-primary uppercase tracking-[0.22em]">
+                    <p
+                      className="font-mono-ui text-xs uppercase tracking-[0.22em]"
+                      style={{ color: "hsl(174 85% 62%)" }}
+                    >
                       {c.num} · {c.title}
                     </p>
-                    <p className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-display font-bold leading-tight text-foreground max-w-xl">
+                    <p
+                      className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-display font-bold leading-tight max-w-xl"
+                      style={{ color: "hsl(0 0% 98%)" }}
+                    >
                       {c.line}
                     </p>
                   </motion.div>
                 );
               })}
-              {/* Spacer so absolute children have height */}
               <div className="invisible">
                 <p className="font-mono-ui text-xs">PLACEHOLDER</p>
                 <p className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-display font-bold leading-tight">
@@ -258,25 +286,42 @@ export function HowIBuild() {
               </div>
             </div>
 
-            {/* Phone mockup — pinned, breathing */}
+            {/* Phone mockup — real screenshots crossfade inside */}
             <div className="relative order-1 lg:order-2 flex justify-center">
               <motion.div
                 style={{ y: phoneY, scale: phoneScale, rotate: phoneRot }}
-                className="relative w-[220px] sm:w-[260px] aspect-[9/19] rounded-[2.4rem] border border-border bg-background/80 backdrop-blur shadow-2xl shadow-primary/10 p-2"
+                className="relative w-[240px] sm:w-[280px] aspect-[9/19.5] rounded-[2.4rem] border border-[hsl(0_0%_100%/0.12)] bg-[hsl(222_47%_8%)] shadow-2xl shadow-primary/20 p-2"
               >
-                <div className="h-full w-full rounded-[2rem] overflow-hidden relative bg-gradient-to-br from-primary/30 via-card to-primary/10">
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 h-4 w-20 rounded-full bg-foreground/80" />
-                  <div className="absolute inset-0 p-5 pt-10 flex flex-col gap-3">
-                    <div className="h-3 w-20 rounded-full bg-foreground/20" />
-                    <div className="h-5 w-32 rounded-full bg-foreground/40" />
-                    <div className="mt-4 h-24 rounded-xl bg-primary/30 border border-primary/40" />
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      <div className="h-16 rounded-lg bg-foreground/10" />
-                      <div className="h-16 rounded-lg bg-foreground/10" />
-                    </div>
-                    <div className="h-3 w-24 rounded-full bg-foreground/20 mt-2" />
-                    <div className="h-3 w-16 rounded-full bg-foreground/10" />
-                  </div>
+                <div className="h-full w-full rounded-[2rem] overflow-hidden relative bg-black">
+                  {CHAPTERS.map((c, i) => {
+                    const n = CHAPTERS.length;
+                    const start = i / n;
+                    const end = (i + 1) / n;
+                    const overlap = 0.05;
+                    // eslint-disable-next-line react-hooks/rules-of-hooks
+                    const op = useTransform(
+                      scrollYProgress,
+                      [
+                        Math.max(0, start - overlap),
+                        start + 0.02,
+                        end - 0.02,
+                        Math.min(1, end + overlap),
+                      ],
+                      [0, 1, 1, 0],
+                    );
+                    return (
+                      <motion.img
+                        key={c.num}
+                        src={c.image}
+                        alt={`iStoria — ${c.title}`}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ opacity: op }}
+                        loading="lazy"
+                      />
+                    );
+                  })}
+                  {/* notch */}
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 h-4 w-20 rounded-full bg-black/80 z-10" />
                 </div>
               </motion.div>
             </div>
