@@ -1,7 +1,7 @@
-import { Reveal } from "./Reveal";
-import { LineReveal } from "./LineReveal";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { LineReveal } from "../../../Archive/LineReveal";
+import { Reveal } from "./Reveal";
 
 export function SectionHeader({
   eyebrow,
@@ -28,10 +28,7 @@ export function SectionHeader({
       >
         {eyebrow}
       </motion.p>
-      <LineReveal
-        text={title}
-        className="mt-3 text-3xl sm:text-5xl font-bold tracking-tight"
-      />
+      <LineReveal text={title} className="mt-3 text-3xl sm:text-5xl font-bold tracking-tight" />
       {description && (
         <Reveal delay={0.05}>
           <p className="mt-4 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">

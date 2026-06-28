@@ -1,10 +1,5 @@
 import { useEffect, useRef } from "react";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 
 /**
  * Cursor-following aura blobs. Bolder color presence, smooth spring lag.

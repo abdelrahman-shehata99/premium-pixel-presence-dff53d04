@@ -118,12 +118,18 @@ export function JourneySpine() {
   const cometX = useMotionValue(50);
   const cometY = useMotionValue(0);
   const dashOffset = useMotionValue(1);
-  const t0x = useMotionValue(50); const t0y = useMotionValue(0);
-  const t1x = useMotionValue(50); const t1y = useMotionValue(0);
-  const t2x = useMotionValue(50); const t2y = useMotionValue(0);
-  const t3x = useMotionValue(50); const t3y = useMotionValue(0);
-  const t4x = useMotionValue(50); const t4y = useMotionValue(0);
-  const t5x = useMotionValue(50); const t5y = useMotionValue(0);
+  const t0x = useMotionValue(50);
+  const t0y = useMotionValue(0);
+  const t1x = useMotionValue(50);
+  const t1y = useMotionValue(0);
+  const t2x = useMotionValue(50);
+  const t2y = useMotionValue(0);
+  const t3x = useMotionValue(50);
+  const t3y = useMotionValue(0);
+  const t4x = useMotionValue(50);
+  const t4y = useMotionValue(0);
+  const t5x = useMotionValue(50);
+  const t5y = useMotionValue(0);
   const trail = [
     { x: t0x, y: t0y },
     { x: t1x, y: t1y },
@@ -140,17 +146,13 @@ export function JourneySpine() {
     if (!path) return;
     const len = path.getTotalLength();
     setTotalLength(len);
-    const pageH =
-      document.documentElement.scrollHeight - window.innerHeight || 1;
+    const pageH = document.documentElement.scrollHeight - window.innerHeight || 1;
     const positions = SECTIONS.map(({ id, label }) => {
       const el = document.getElementById(id);
       if (!el) return { id, label, x: 50, y: 0 };
       const top = el.getBoundingClientRect().top + window.scrollY;
       const center = top + el.offsetHeight / 2;
-      const fraction = Math.min(
-        1,
-        Math.max(0, (center - window.innerHeight / 2) / pageH),
-      );
+      const fraction = Math.min(1, Math.max(0, (center - window.innerHeight / 2) / pageH));
       const pt = path.getPointAtLength(fraction * len);
       return { id, label, x: pt.x, y: pt.y };
     });
@@ -171,7 +173,6 @@ export function JourneySpine() {
       clearTimeout(t);
     };
     // recompute whenever size changes the path
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [size]);
 
   useEffect(() => {
@@ -210,21 +211,13 @@ export function JourneySpine() {
   });
 
   // Apply small left padding to body content so the spine sits in a gutter
-  // (tablet/desktop only — mobile hides the spine entirely)
   useEffect(() => {
-    if (size === "mobile") {
-      document.body.style.paddingLeft = "";
-      return;
-    }
-    const pad = size === "tablet" ? "28px" : "0px";
+    const pad = size === "mobile" ? "18px" : size === "tablet" ? "28px" : "0px";
     document.body.style.paddingLeft = pad;
     return () => {
       document.body.style.paddingLeft = "";
     };
   }, [size]);
-
-  // Hide entirely on mobile — too much visual noise + creates overflow risk.
-  if (size === "mobile") return null;
 
   const gradId = "spineGrad";
 
@@ -246,7 +239,14 @@ export function JourneySpine() {
         className="absolute inset-0 w-full h-full overflow-visible"
       >
         <defs>
-          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2={RAIL_H} gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id={gradId}
+            x1="0"
+            y1="0"
+            x2="0"
+            y2={RAIL_H}
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor="hsl(174 80% 55%)" />
             <stop offset="100%" stopColor="hsl(250 80% 62%)" />
           </linearGradient>
@@ -313,9 +313,7 @@ export function JourneySpine() {
                 r={isActive ? cfg.activeNode : cfg.node}
                 fill={isActive ? `url(#${gradId})` : "hsl(174 80% 55% / 0.55)"}
                 style={{
-                  filter: isActive
-                    ? "drop-shadow(0 0 5px hsl(174 85% 55% / 0.8))"
-                    : undefined,
+                  filter: isActive ? "drop-shadow(0 0 5px hsl(174 85% 55% / 0.8))" : undefined,
                   transition: "r 200ms ease-out",
                 }}
               />

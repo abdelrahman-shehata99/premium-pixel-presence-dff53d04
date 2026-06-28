@@ -83,32 +83,6 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
-  /* Belt-and-braces: never allow horizontal page scroll on mobile. */
-  overflow-x: clip;
-}
-
-body {
-  overflow-x: clip;
-  min-width: 0;
-}
-
-/* Default scroll offset for anchor targets so headings clear sticky header. */
-section[id] {
-  scroll-margin-top: 5rem;
-}
-
-/* When the desktop custom cursor is active, hide the native one. */
-html.cursor-none-root,
-html.cursor-none-root * {
-  cursor: none !important;
-}
-
-/* Grow custom cursor on hover over interactive elements. */
-.custom-cursor[data-hover="true"] {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 12px !important;
-  background-color: hsl(174 80% 55% / 0.18) !important;
 }
 
 @layer base {
@@ -124,7 +98,10 @@ html.cursor-none-root * {
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
@@ -157,8 +134,13 @@ html.cursor-none-root * {
 }
 
 @keyframes cta-breath {
-  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--ring) / 0); }
-  50% { box-shadow: 0 0 28px 4px hsl(174 80% 55% / 0.45); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--ring) / 0);
+  }
+  50% {
+    box-shadow: 0 0 28px 4px hsl(174 80% 55% / 0.45);
+  }
 }
 .cta-breath {
   animation: cta-breath 3s ease-in-out infinite;
@@ -172,7 +154,12 @@ html.cursor-none-root * {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
   transform: translateX(-120%);
   transition: transform 0.7s ease;
   pointer-events: none;
@@ -183,18 +170,28 @@ html.cursor-none-root * {
 .cta-sheen:hover .cta-arrow {
   transform: translateX(4px);
 }
-.cta-arrow { transition: transform 0.3s ease; }
-
-@media (prefers-reduced-motion: reduce) {
-  .cta-breath { animation: none; }
-  .cta-sheen::after { display: none; }
+.cta-arrow {
+  transition: transform 0.3s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  .cta-breath {
+    animation: none;
+  }
+  .cta-sheen::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+  }
 }

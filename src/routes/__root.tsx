@@ -82,11 +82,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Lovable App" },
       { property: "og:title", content: "Lovable App" },
       { name: "twitter:title", content: "Lovable App" },
-      { name: "description", content: "A modern, minimal personal portfolio website for a senior Flutter engineer, showcasing experience and skills." },
-      { property: "og:description", content: "A modern, minimal personal portfolio website for a senior Flutter engineer, showcasing experience and skills." },
-      { name: "twitter:description", content: "A modern, minimal personal portfolio website for a senior Flutter engineer, showcasing experience and skills." },
-      { property: "og:image", content: "https://premium-pixel-presence.lovable.app/__l5e/assets-v1/cfab254a-660e-43e6-b419-d08080ff7a25/headshot.jpg" },
-      { name: "twitter:image", content: "https://premium-pixel-presence.lovable.app/__l5e/assets-v1/cfab254a-660e-43e6-b419-d08080ff7a25/headshot.jpg" },
+      {
+        name: "description",
+        content:
+          "A modern, minimal personal portfolio website for a senior Flutter engineer, showcasing experience and skills.",
+      },
+      {
+        property: "og:description",
+        content:
+          "A modern, minimal personal portfolio website for a senior Flutter engineer, showcasing experience and skills.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "A modern, minimal personal portfolio website for a senior Flutter engineer, showcasing experience and skills.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fcea5f7d-5c1a-4aa6-8f3f-d727f62034d1/id-preview-12cbee9e--f20d7962-1f73-44f2-beac-d87fdb3690af.lovable.app-1782098272639.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fcea5f7d-5c1a-4aa6-8f3f-d727f62034d1/id-preview-12cbee9e--f20d7962-1f73-44f2-beac-d87fdb3690af.lovable.app-1782098272639.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],
