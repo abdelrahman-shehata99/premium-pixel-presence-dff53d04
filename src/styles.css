@@ -83,6 +83,32 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+  /* Belt-and-braces: never allow horizontal page scroll on mobile. */
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
+  min-width: 0;
+}
+
+/* Default scroll offset for anchor targets so headings clear sticky header. */
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* When the desktop custom cursor is active, hide the native one. */
+html.cursor-none-root,
+html.cursor-none-root * {
+  cursor: none !important;
+}
+
+/* Grow custom cursor on hover over interactive elements. */
+.custom-cursor[data-hover="true"] {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  background-color: hsl(174 80% 55% / 0.18) !important;
 }
 
 @layer base {
