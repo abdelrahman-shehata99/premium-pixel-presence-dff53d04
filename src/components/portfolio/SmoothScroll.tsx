@@ -4,6 +4,10 @@ export function SmoothScroll() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Desktop only. On touch devices Lenis hijacks momentum scrolling and can
+    // make the page feel laggy/stuck and desync scroll-linked animations, so we
+    // leave native scrolling in place (the scroll-driven effects are desktop-only).
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
     let raf = 0;
     let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;

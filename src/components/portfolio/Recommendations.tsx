@@ -1,85 +1,79 @@
-import { useState } from "react";
-import { ArrowUpRight, Quote } from "lucide-react";
+import { RECOMMENDATIONS } from "@/data/recommendations";
 import { SectionHeader } from "./SectionHeader";
 import { Stagger, StaggerItem } from "./Reveal";
-import { RECOMMENDATIONS } from "@/data/recommendations";
-
-const DEFAULT_VISIBLE = 4;
+import { Linkedin, Quote } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Recommendations() {
-  const [expanded, setExpanded] = useState(false);
-  const visible = expanded
-    ? RECOMMENDATIONS
-    : RECOMMENDATIONS.slice(0, DEFAULT_VISIBLE);
-  const hasMore = RECOMMENDATIONS.length > DEFAULT_VISIBLE;
-
   return (
-    <section id="recommendations" className="py-20 sm:py-28">
+    <section id="recommendations" className="py-20 sm:py-28 scroll-mt-24">
       <div className="mx-auto max-w-[1140px] px-5 sm:px-8">
         <SectionHeader
           eyebrow="05 — Recommendations"
-          title="What people say"
-          description="Endorsements from teammates and managers I've worked with."
+          title="Kind words from colleagues"
+          description="Testimonials and feedback from managers, leads, product designers, and peers."
         />
 
-        <Stagger className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-          {visible.map((r, i) => (
-            <StaggerItem
-              key={`${r.name}-${i}`}
-              className="group rounded-2xl border border-border bg-card p-6 sm:p-7 flex flex-col hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg transition-all"
-            >
-              <Quote
-                aria-hidden
-                className="h-6 w-6 text-primary/60 shrink-0"
-              />
-              <blockquote className="mt-4 text-base sm:text-[17px] leading-relaxed text-foreground/90">
-                "{r.quote}"
-              </blockquote>
-              <div className="mt-6 flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <a
-                    href={r.linkedinUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-medium text-foreground hover:text-primary transition-colors break-words"
-                  >
-                    {r.name}
-                    <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
-                  </a>
-                  <p className="mt-0.5 text-sm text-muted-foreground break-words">
-                    {r.title}
-                  </p>
-                  <p className="mt-2 font-mono-ui text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    {r.relationship}
-                  </p>
-                </div>
-                {r.avatar && (
-                  <img
-                    src={r.avatar}
-                    alt=""
-                    loading="lazy"
-                    className="h-10 w-10 rounded-full object-cover shrink-0 border border-border"
-                  />
-                )}
-              </div>
-            </StaggerItem>
-          ))}
-        </Stagger>
+        <Stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-12">
+          {RECOMMENDATIONS.map((r, i) => {
+            const initials = r.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .slice(0, 2);
 
-        {hasMore && (
-          <div className="mt-8 flex justify-center">
-            <button
-              type="button"
-              onClick={() => setExpanded((v) => !v)}
-              className="inline-flex items-center gap-2 h-11 px-5 rounded-lg border border-border text-sm font-medium hover:border-primary hover:text-primary transition-colors"
-            >
-              {expanded
-                ? "Show fewer recommendations"
-                : `View all recommendations (${RECOMMENDATIONS.length})`}
-            </button>
-          </div>
-        )}
+            return (
+              <StaggerItem key={i} className="flex">
+                <div className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 sm:p-8 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg transition-all duration-300 w-full">
+                  {/* Subtle quote icon */}
+                  <Quote className="absolute right-6 top-6 h-8 w-8 text-primary/10 group-hover:text-primary/20 transition-colors" />
+
+                  <div className="flex-1">
+                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed italic relative z-10">
+                      "{r.quote}"
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-border flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10 border border-border">
+                        {r.avatar && (
+                          <AvatarImage src={r.avatar} alt={`${r.name}'s recommendation avatar`} />
+                        )}
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold font-mono-ui">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <h4 className="font-semibold text-sm sm:text-base tracking-tight truncate">
+                          {r.name}
+                        </h4>
+                        <p className="text-xs text-muted-foreground truncate max-w-[180px]">
+                          {r.title}
+                        </p>
+                        <p className="text-[10px] text-primary/80 font-mono-ui mt-0.5 tracking-wider truncate">
+                          {r.relationship}
+                        </p>
+                      </div>
+                    </div>
+
+                    <a
+                      href={r.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary hover:bg-secondary transition-all"
+                      aria-label={`${r.name}'s LinkedIn profile`}
+                    >
+                      <Linkedin className="h-4 w-4" />
+                    </a>
+                  </div>
+                </div>
+              </StaggerItem>
+            );
+          })}
+        </Stagger>
       </div>
     </section>
   );
 }
+export default Recommendations;

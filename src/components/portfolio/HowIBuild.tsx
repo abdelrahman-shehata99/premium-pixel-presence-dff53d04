@@ -1,16 +1,12 @@
 import { useEffect, useRef } from "react";
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
-import screenJourney from "@/assets/screen-journey.png.asset.json";
-import screenVocab from "@/assets/screen-vocab.png.asset.json";
-import screenLibrary from "@/assets/screen-library.png.asset.json";
-import screenStreak from "@/assets/screen-streak.png.asset.json";
-import screenReader from "@/assets/screen-reader.png.asset.json";
+import { Stagger, StaggerItem } from "./Reveal";
+import screenJourney from "@/assets/screen-journey.png";
+import screenVocab from "@/assets/screen-vocab.png";
+import screenLibrary from "@/assets/screen-library.png";
+import screenStreak from "@/assets/screen-streak.png";
+import screenReader from "@/assets/screen-reader.png";
 
 type Chapter = {
   num: string;
@@ -25,30 +21,30 @@ const CHAPTERS: Chapter[] = [
     num: "01",
     title: "Architecture",
     line: "Clean, scalable Flutter — MVVM, BLoC/Cubit, feature-first modularization.",
-    image: screenJourney.url,
+    image: screenJourney,
   },
   {
     num: "02",
     title: "AI personalization",
     line: "AI model endpoints powering personalization & recommendations that lift retention.",
-    image: screenReader.url,
+    image: screenReader,
   },
   {
     num: "03",
     title: "Scale",
     line: "Production apps serving 5M+ users across iOS & Android, smooth at scale.",
-    image: screenLibrary.url,
+    image: screenLibrary,
   },
   {
     num: "04",
     title: "Release engineering",
     line: "End-to-end delivery — CI/CD, testing, App Store & Play Store releases.",
-    image: screenStreak.url,
+    image: screenStreak,
   },
 ];
 
 // Reference so unused-imports check passes & we can rotate the secondary frame.
-const EXTRA_SCREEN = screenVocab.url;
+const EXTRA_SCREEN = screenVocab;
 void EXTRA_SCREEN;
 
 function ChapterStacked({ c }: { c: Chapter }) {
@@ -73,9 +69,7 @@ function ChapterStacked({ c }: { c: Chapter }) {
         <p className="font-mono-ui text-xs uppercase tracking-[0.18em] text-[hsl(174_85%_60%)]">
           {c.num} · {c.title}
         </p>
-        <p className="mt-3 text-lg sm:text-xl leading-relaxed text-[hsl(0_0%_98%)]">
-          {c.line}
-        </p>
+        <p className="mt-3 text-lg sm:text-xl leading-relaxed text-[hsl(0_0%_98%)]">{c.line}</p>
       </div>
     </div>
   );
@@ -133,18 +127,16 @@ export function HowIBuild() {
       </div>
 
       {/* Mobile / small screens: simple vertical stack — no sticky, no scroll-jacking. */}
-      <div className="lg:hidden mx-auto max-w-[1140px] px-5 sm:px-8 pb-20 grid gap-5 sm:gap-6">
+      <Stagger className="lg:hidden mx-auto max-w-[1140px] px-5 sm:px-8 pb-20 grid gap-5 sm:gap-6">
         {CHAPTERS.map((c) => (
-          <ChapterStacked key={c.num} c={c} />
+          <StaggerItem key={c.num}>
+            <ChapterStacked c={c} />
+          </StaggerItem>
         ))}
-      </div>
+      </Stagger>
 
       {/* Pinned scrollytelling — lg+ only. Always dark stage. */}
-      <div
-        ref={wrapperRef}
-        className="hidden lg:block relative"
-        style={{ height: "400vh" }}
-      >
+      <div ref={wrapperRef} className="hidden lg:block relative" style={{ height: "400vh" }}>
         <div className="sticky top-0 h-[100svh] overflow-hidden bg-[hsl(222_47%_4%)]">
           {/* Background sequence — same image, blurred & darkened */}
           {CHAPTERS.map((c, i) => {
@@ -155,24 +147,11 @@ export function HowIBuild() {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const opacity = useTransform(
               scrollYProgress,
-              [
-                Math.max(0, start - overlap),
-                start,
-                end - overlap,
-                Math.min(1, end),
-              ],
-              i === 0
-                ? [1, 1, 1, 0]
-                : i === n - 1
-                  ? [0, 1, 1, 1]
-                  : [0, 1, 1, 0],
+              [Math.max(0, start - overlap), start, end - overlap, Math.min(1, end)],
+              i === 0 ? [1, 1, 1, 0] : i === n - 1 ? [0, 1, 1, 1] : [0, 1, 1, 0],
             );
             // eslint-disable-next-line react-hooks/rules-of-hooks
-            const scale = useTransform(
-              scrollYProgress,
-              [start, end],
-              [1.05, 1.18],
-            );
+            const scale = useTransform(scrollYProgress, [start, end], [1.05, 1.18]);
             return (
               <motion.div
                 key={c.num}
@@ -263,11 +242,7 @@ export function HowIBuild() {
                   [0, 1, 1, 0],
                 );
                 // eslint-disable-next-line react-hooks/rules-of-hooks
-                const yy = useTransform(
-                  scrollYProgress,
-                  [start, end],
-                  [20, -20],
-                );
+                const yy = useTransform(scrollYProgress, [start, end], [20, -20]);
                 return (
                   <motion.div
                     key={c.num}
@@ -315,11 +290,7 @@ export function HowIBuild() {
                       [0, 1, 1, 0],
                     );
                     // eslint-disable-next-line react-hooks/rules-of-hooks
-                    const sc = useTransform(
-                      scrollYProgress,
-                      [start, end],
-                      [1.0, 1.04],
-                    );
+                    const sc = useTransform(scrollYProgress, [start, end], [1.0, 1.04]);
                     return (
                       <motion.img
                         key={c.num}

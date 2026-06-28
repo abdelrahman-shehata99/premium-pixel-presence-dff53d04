@@ -18,8 +18,7 @@ declare global {
 
 export function prefersReducedMotion(): boolean {
   if (typeof window === "undefined") return false;
-  return window.matchMedia("(prefers-color-scheme: light)") &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 /** Smoothly scroll to a hash target, accounting for the fixed navbar. */

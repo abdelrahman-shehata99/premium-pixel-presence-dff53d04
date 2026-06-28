@@ -53,7 +53,9 @@ export function EducationLanguages() {
             </li>
             <li className="flex items-baseline justify-between">
               <span className="font-medium">English</span>
-              <span className="font-mono-ui text-xs text-muted-foreground">Professional Working</span>
+              <span className="font-mono-ui text-xs text-muted-foreground">
+                Professional Working
+              </span>
             </li>
           </ul>
         </Reveal>
