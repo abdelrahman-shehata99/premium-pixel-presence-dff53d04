@@ -1,6 +1,7 @@
 import { SectionHeader } from "./SectionHeader";
 import { Reveal } from "./Reveal";
-import { Mail, Phone, Github, Linkedin, ArrowUpRight } from "lucide-react";
+import { Mail, Phone, Github, Linkedin, ArrowUpRight, Download } from "lucide-react";
+import cv from "@/assets/cv.pdf.asset.json";
 
 const LINKS = [
   {
@@ -31,13 +32,35 @@ const LINKS = [
 
 export function Contact() {
   return (
-    <section id="contact" className="py-20 sm:py-28">
+    <section id="contact" className="py-20 sm:py-28 scroll-mt-24">
       <div className="mx-auto max-w-[1140px] px-5 sm:px-8">
         <SectionHeader
-          eyebrow="05 — Contact"
+          eyebrow="06 — Contact"
           title="Let's build something."
           description="Open to senior mobile engineering opportunities — let's talk."
         />
+
+        <Reveal>
+          <div className="mb-6 flex flex-wrap gap-3">
+            <a
+              href={cv.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              download="Abdelrahman_Shehata_CV.pdf"
+              className="cta-sheen inline-flex items-center gap-2 min-h-11 px-5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 transition-all"
+            >
+              <Download className="h-4 w-4" /> Download CV
+            </a>
+            <a
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=abdelrahman2490@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 min-h-11 px-5 rounded-lg border border-border font-medium text-sm hover:-translate-y-0.5 hover:border-primary hover:text-primary transition-all"
+            >
+              <Mail className="h-4 w-4" /> Send an email
+            </a>
+          </div>
+        </Reveal>
 
         <Reveal>
           <ul className="grid sm:grid-cols-2 gap-3 sm:gap-4">
@@ -47,7 +70,7 @@ export function Contact() {
                   href={href}
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="group flex items-center gap-4 rounded-2xl border border-border bg-card p-5 sm:p-6 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-lg transition-all"
+                  className="group flex items-center gap-4 rounded-2xl border border-border bg-card p-5 sm:p-6 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-lg transition-all min-h-[68px]"
                 >
                   <span className="h-11 w-11 grid place-items-center rounded-xl bg-primary/10 text-primary shrink-0">
                     <Icon className="h-5 w-5" />

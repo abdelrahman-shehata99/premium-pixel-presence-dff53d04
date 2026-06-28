@@ -9,12 +9,12 @@ const ROLES = [
     dates: "Jan 2025 – Present",
     location: "Riyadh, Saudi Arabia (Remote)",
     bullets: [
-      "Build and maintain high-performance Flutter applications serving 5+ million users across iOS and Android, keeping interactions smooth and responsive at scale.",
-      "Designed a reusable component and animation system that standardized the UI across the app and accelerated delivery of new features.",
-      "Integrated AI model endpoints powering personalization and recommendation features that increased user retention.",
-      "Established a rigorous testing approach (unit, widget, integration) and a structured bug-triage process, reducing user-reported issues by 30%.",
-      "Led multiple Flutter projects end-to-end — from architecture and state-management design through App Store and Play Store release — with an emphasis on scalability and maintainability.",
-      "Mentored junior developers through structured code reviews and pair programming, raising team code quality and delivery speed.",
+      "Built and shipped high-performance Flutter features across iOS and Android — keeping interactions smooth for 5M+ users and holding a [ADD METRIC]% crash-free session rate.",
+      "Designed and shipped a reusable component & animation system that standardized the UI across [ADD METRIC] feature modules and cut new-screen build time by ~[ADD METRIC]%.",
+      "Integrated AI personalization & recommendation endpoints (model APIs + on-device caching) that lifted user retention by [ADD METRIC]% and session depth by [ADD METRIC]%.",
+      "Established a rigorous test suite (unit, widget, integration) and a structured bug-triage process, reducing user-reported issues by 30% and raising coverage to [ADD METRIC]%.",
+      "Led [ADD METRIC] Flutter projects end-to-end — architecture, state management, App Store & Play Store release — with a focus on scalability and maintainability.",
+      "Mentored [ADD METRIC] junior developers through structured code reviews and pair programming, raising team code quality and unblocking delivery week over week.",
     ],
   },
   {
@@ -24,8 +24,8 @@ const ROLES = [
     dates: "May 2022 – Nov 2024",
     location: "Istanbul, Turkey (Remote)",
     bullets: [
-      "Built complex animations and interactive UI components that elevated the look and usability of client products.",
-      "Managed client relationships and scope across concurrent engagements, earning repeat business and successful project renewals.",
+      "Shipped complex Flutter animations & interactive UI components for [ADD METRIC] client products, raising visual polish and usability against agreed UX benchmarks.",
+      "Owned client relationships and scope across [ADD METRIC] concurrent engagements, earning repeat business and successful project renewals.",
     ],
   },
   {
@@ -35,17 +35,17 @@ const ROLES = [
     dates: "May 2020 – Feb 2022",
     location: "Cairo, Egypt",
     bullets: [
-      "Built and maintained the logistics and internal-operations app, integrating with backend inventory and order-management systems.",
-      "Designed offline-capable flows with efficient API sync, reducing friction for warehouse and field staff.",
-      "Improved performance and stability across modules to deliver a more reliable internal logistics tool.",
-      "Set up CI/CD pipelines and code-quality standards to streamline releases and ongoing maintenance.",
+      "Built and maintained the logistics & internal-operations app integrating with backend inventory and order-management systems, used by [ADD METRIC] warehouse and field staff daily.",
+      "Designed offline-capable flows with efficient API sync, reducing data-entry errors by [ADD METRIC]% and unblocking work in low-connectivity warehouses.",
+      "Improved performance and stability across [ADD METRIC] feature modules, taking app start time from [ADD METRIC]s to [ADD METRIC]s.",
+      "Set up CI/CD pipelines and code-quality gates that cut release prep time by [ADD METRIC]% and standardized ongoing maintenance.",
     ],
   },
 ];
 
 export function Experience() {
   return (
-    <section id="experience" className="py-20 sm:py-28">
+    <section id="experience" className="py-20 sm:py-28 scroll-mt-24">
       <div className="mx-auto max-w-[1140px] px-5 sm:px-8">
         <SectionHeader
           eyebrow="02 — Experience"
@@ -66,17 +66,17 @@ export function Experience() {
                   aria-hidden
                   className="absolute left-2 sm:left-3 top-7 h-3 w-3 rounded-full bg-primary ring-4 ring-background"
                 />
-                <article className="group rounded-2xl border border-border bg-card p-6 sm:p-8 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg transition-all">
-                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 sm:flex sm:flex-wrap sm:justify-between">
+                <article className="group rounded-2xl border border-border bg-card p-5 sm:p-8 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg transition-all">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-4">
                     <div className="min-w-0">
-                      <h3 className="text-xl sm:text-2xl font-semibold tracking-tight">
+                      <h3 className="text-lg sm:text-2xl font-semibold tracking-tight">
                         {r.role}
                       </h3>
-                      <p className="mt-1 text-base text-primary font-medium">
+                      <p className="mt-1 text-base text-primary font-medium break-words">
                         {r.company} <span className="text-muted-foreground font-normal">· {r.type}</span>
                       </p>
                     </div>
-                    <div className="shrink-0 text-right">
+                    <div className="sm:shrink-0 sm:text-right">
                       <p className="font-mono-ui text-xs text-muted-foreground">{r.dates}</p>
                       <p className="font-mono-ui text-xs text-muted-foreground mt-1">{r.location}</p>
                     </div>
@@ -85,7 +85,7 @@ export function Experience() {
                     {r.bullets.map((b, i) => (
                       <li
                         key={i}
-                        className="relative pl-5 text-sm sm:text-base text-muted-foreground leading-relaxed"
+                        className="relative pl-5 text-[15px] sm:text-base text-muted-foreground leading-relaxed"
                       >
                         <span
                           aria-hidden

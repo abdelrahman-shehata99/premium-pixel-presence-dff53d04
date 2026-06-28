@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { applyTheme, getInitialTheme } from "@/lib/theme";
 import { scrollToId } from "@/lib/smooth-scroll";
+import cv from "@/assets/cv.pdf.asset.json";
 
 const NAV_LINKS = [
   { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "skills", label: "Skills" },
   { id: "work", label: "Work" },
+  { id: "recommendations", label: "Recommendations" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -47,6 +49,16 @@ export function Navbar() {
     return () => observer.disconnect();
   }, []);
 
+  // Lock body scroll while mobile menu is open
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   const toggle = () => {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
@@ -61,14 +73,14 @@ export function Navbar() {
           : "h-16 bg-transparent"
       }`}
     >
-      <div className="mx-auto max-w-[1140px] h-full px-5 sm:px-8 flex items-center justify-between">
+      <div className="mx-auto max-w-[1140px] h-full px-5 sm:px-8 flex items-center justify-between gap-3">
         <a
           href="#top"
           onClick={(e) => {
             e.preventDefault();
             scrollToId("top");
           }}
-          className="font-display font-bold text-lg tracking-tight"
+          className="font-display font-bold text-lg tracking-tight shrink-0"
           aria-label="Home"
         >
           Abdelrahman<span className="text-primary">.</span>
@@ -101,27 +113,30 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={toggle}
             aria-label="Toggle theme"
-            className="h-9 w-9 grid place-items-center rounded-md border border-border hover:bg-secondary transition-colors"
+            className="h-11 w-11 sm:h-9 sm:w-9 grid place-items-center rounded-md border border-border hover:bg-secondary transition-colors"
           >
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           <a
-            href="#"
+            href={cv.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            download="Abdelrahman_Shehata_CV.pdf"
             className="hidden sm:inline-flex items-center h-9 px-4 text-sm font-medium rounded-md border border-border hover:border-primary hover:text-primary transition-colors"
           >
             Resume
           </a>
           <button
-            className="md:hidden h-9 w-9 grid place-items-center rounded-md border border-border"
+            className="md:hidden h-11 w-11 grid place-items-center rounded-md border border-border"
             onClick={() => setOpen((v) => !v)}
-            aria-label="Open menu"
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
           >
-            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
@@ -133,7 +148,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden absolute top-full inset-x-0 bg-background/95 backdrop-blur-xl border-b border-border"
+            className="md:hidden absolute top-full inset-x-0 bg-background/95 backdrop-blur-xl border-b border-border max-h-[calc(100svh-3.5rem)] overflow-y-auto"
           >
             <nav className="px-5 py-4 flex flex-col gap-1" aria-label="Mobile">
               {NAV_LINKS.map((link) => (
@@ -143,9 +158,10 @@ export function Navbar() {
                   onClick={(e) => {
                     e.preventDefault();
                     setOpen(false);
-                    scrollToId(link.id);
+                    // Defer so the menu close paints first, then scroll.
+                    requestAnimationFrame(() => scrollToId(link.id));
                   }}
-                  className={`px-3 py-3 rounded-md text-base ${
+                  className={`min-h-11 flex items-center px-3 py-3 rounded-md text-base ${
                     active === link.id
                       ? "text-primary bg-secondary"
                       : "text-foreground/80 hover:bg-secondary"
@@ -155,10 +171,14 @@ export function Navbar() {
                 </a>
               ))}
               <a
-                href="#"
-                className="mt-2 px-3 py-3 rounded-md text-base border border-border text-center"
+                href={cv.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                download="Abdelrahman_Shehata_CV.pdf"
+                onClick={() => setOpen(false)}
+                className="mt-2 min-h-11 flex items-center justify-center px-3 py-3 rounded-md text-base border border-border"
               >
-                Resume
+                Download Resume
               </a>
             </nav>
           </motion.div>

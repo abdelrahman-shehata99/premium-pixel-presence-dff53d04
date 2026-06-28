@@ -210,14 +210,21 @@ export function JourneySpine() {
   });
 
   // Apply small left padding to body content so the spine sits in a gutter
+  // (tablet/desktop only — mobile hides the spine entirely)
   useEffect(() => {
-    const pad =
-      size === "mobile" ? "18px" : size === "tablet" ? "28px" : "0px";
+    if (size === "mobile") {
+      document.body.style.paddingLeft = "";
+      return;
+    }
+    const pad = size === "tablet" ? "28px" : "0px";
     document.body.style.paddingLeft = pad;
     return () => {
       document.body.style.paddingLeft = "";
     };
   }, [size]);
+
+  // Hide entirely on mobile — too much visual noise + creates overflow risk.
+  if (size === "mobile") return null;
 
   const gradId = "spineGrad";
 

@@ -105,7 +105,7 @@ export function HowIBuild() {
 
   if (reduced) {
     return (
-      <section id="how-i-build" className="py-20 sm:py-28">
+      <section id="how-i-build" className="py-20 sm:py-28 scroll-mt-24">
         <div className="mx-auto max-w-[1140px] px-5 sm:px-8">
           <SectionHeader
             eyebrow="◆ — The work"
@@ -123,7 +123,7 @@ export function HowIBuild() {
   }
 
   return (
-    <section id="how-i-build" aria-label="How I build">
+    <section id="how-i-build" aria-label="How I build" className="scroll-mt-24">
       <div className="mx-auto max-w-[1140px] px-5 sm:px-8 pt-20 sm:pt-28">
         <SectionHeader
           eyebrow="◆ — The work"
@@ -132,17 +132,17 @@ export function HowIBuild() {
         />
       </div>
 
-      {/* On very small screens, render stacked to avoid sticky quirks. */}
-      <div className="sm:hidden mx-auto max-w-[1140px] px-5 pb-20 grid gap-5">
+      {/* Mobile / small screens: simple vertical stack — no sticky, no scroll-jacking. */}
+      <div className="lg:hidden mx-auto max-w-[1140px] px-5 sm:px-8 pb-20 grid gap-5 sm:gap-6">
         {CHAPTERS.map((c) => (
           <ChapterStacked key={c.num} c={c} />
         ))}
       </div>
 
-      {/* Pinned scrollytelling — sm and up. Always dark stage. */}
+      {/* Pinned scrollytelling — lg+ only. Always dark stage. */}
       <div
         ref={wrapperRef}
-        className="hidden sm:block relative"
+        className="hidden lg:block relative"
         style={{ height: "400vh" }}
       >
         <div className="sticky top-0 h-[100svh] overflow-hidden bg-[hsl(222_47%_4%)]">
@@ -242,7 +242,10 @@ export function HowIBuild() {
           {/* Sticky foreground — phone device + captions */}
           <div className="relative h-full mx-auto max-w-[1140px] px-5 sm:px-8 grid lg:grid-cols-2 items-center gap-10">
             {/* Captions — always near-white over scrim */}
-            <div className="relative z-10 order-2 lg:order-1">
+            <div
+              className="relative z-10 order-2 lg:order-1"
+              style={{ minHeight: "min(60vh, 360px)" }}
+            >
               {CHAPTERS.map((c, i) => {
                 const n = CHAPTERS.length;
                 const start = i / n;
@@ -286,13 +289,6 @@ export function HowIBuild() {
                   </motion.div>
                 );
               })}
-              <div className="invisible">
-                <p className="font-mono-ui text-xs">PLACEHOLDER</p>
-                <p className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-display font-bold leading-tight">
-                  Placeholder line that reserves enough vertical space for the
-                  longest caption shown above.
-                </p>
-              </div>
             </div>
 
             {/* Phone mockup — real screenshots crossfade inside */}
