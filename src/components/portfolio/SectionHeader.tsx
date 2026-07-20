@@ -1,6 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { LineReveal } from "../../../Archive/LineReveal";
+import { LineReveal } from "./LineReveal";
 import { Reveal } from "./Reveal";
 
 export function SectionHeader({
