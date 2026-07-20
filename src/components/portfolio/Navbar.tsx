@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { applyTheme, getInitialTheme } from "@/lib/theme";
 import { scrollToId } from "@/lib/smooth-scroll";
+import cvUrl from "@/assets/Abdelrahman_Shehata_CV.pdf";
 
 const NAV_LINKS = [
   { id: "about", label: "About" },
@@ -111,7 +112,8 @@ export function Navbar() {
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           <a
-            href="#"
+            href={cvUrl}
+            download="Abdelrahman_Shehata_CV.pdf"
             className="hidden sm:inline-flex items-center h-9 px-4 text-sm font-medium rounded-md border border-border hover:border-primary hover:text-primary transition-colors"
           >
             Resume
@@ -156,7 +158,9 @@ export function Navbar() {
                 </a>
               ))}
               <a
-                href="#"
+                href={cvUrl}
+                download="Abdelrahman_Shehata_CV.pdf"
+                onClick={() => setOpen(false)}
                 className="mt-2 px-3 py-3 rounded-md text-base border border-border text-center"
               >
                 Resume
